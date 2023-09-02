@@ -1,7 +1,7 @@
 # VNS Script
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://repo.vnscdn.com/vns/)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://vnscdn.com/)
 
 ## Mô tả
 
@@ -14,13 +14,13 @@ Bạn có thể sử dụng các lệnh sau để tải về và chạy VNS Scri
 ### Sử dụng Curl
 
 ```bash
-curl -sO https://repo.vnscdn.com/vns/vns.sh && chmod +x vns.sh && bash vns.sh
+curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
 ```
 
 ### Sử dụng Wget
   
   ```bash
-  wget https://repo.vnscdn.com/vns/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
+  wget https://vnscdn.com/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
   ```
 
 ## Tùy chọn

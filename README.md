@@ -43,6 +43,10 @@ Hoặc bạn có thể tự kiểm tra cập nhật bằng cách chạy thủ c�
 bash ~/vns.sh check-update
 ```
 
-## Giấy phép
+## Đóng góp và báo lỗi
 
-[MIT](LICENSE.md) © 2013-2023 [Nguyễn Hồng Thế Blog](https://nguyenhongthe.net)
+Repo này được đồng bộ tự động với `repo.vnscdn.com`. Nếu bạn muốn đóng góp hoặc báo lỗi, hãy truy cập vào repo chính [nguyenhongthe/repo.vnscdn.com](https://github.com/nguyenhongthe/repo.vnscdn.com/tree/main/packages/vns) nơi mã gốc được phát triển.
+
+## Bản quyền và giấy phép
+
+Copyright (c) 2013-2023 Nguyễn Hồng Thế Blog - Phát hành theo giấy phép [MIT](LICENSE).

@@ -7,8 +7,8 @@
 # Ngày: 2023-08-25
 # Phiên bản: 1.0.0
 # Giấy phép: Giấy phép MIT
-# Sử dụng: curl -sO https://repo.vnscdn.com/vns/vns.sh && chmod +x vns.sh && bash vns.sh
-# Hoặc: wget https://repo.vnscdn.com/vns/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
+# Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
+# Hoặc: wget https://vnscdn.com/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
 #==============================================================================================================
 
 vns_version="1.0.0"
@@ -17,7 +17,7 @@ vns_ubuntu_version="1.0.0"
 vns_amazon_version="1.0.0"
 vns_rhel_version="1.0.0"
 vns_website_version="1.0.0"
-script_url="https://repo.vnscdn.com/vns/"
+script_url="https://vnscdn.com/"
 
 # Kiểm tra xem script có được chạy bởi root hay không?
 if [ "x$(id -u)" != 'x0' ]; then
@@ -68,7 +68,7 @@ function check_and_update_platform_script {
     if [ ! -e "$update_script_dir/vns-$type.sh" ]; then
         echo "Tải về script cài đặt cho hệ điều hành $type..."
         echo
-        wget "https://repo.vnscdn.com/vns/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
+        wget "https://vnscdn.com/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
         if [ "$?" -eq '0' ]; then
             chmod +x "$update_script_dir/vns-$type.sh"
             bash "$update_script_dir/vns-$type.sh" "$*"
@@ -82,7 +82,7 @@ function check_and_update_platform_script {
     # Ngược lại thì kiểm tra xem phiên bản hiện tại của script cài đặt cho hệ điều hành có khác phiên bản mới nhất hay không?
     else
         # Lấy phiên bản mới nhất của script cài đặt cho hệ điều hành từ repo của VNSCDN.
-        latest_version_platform=$(curl -s "https://repo.vnscdn.com/vns/platforms/latest-version-$type.txt")
+        latest_version_platform=$(curl -s "https://vnscdn.com/platforms/latest-version-$type.txt")
         # Lấy phiên bản hiện tại của script cài đặt cho hệ điều hành.
         current_version_platform=$(grep -oE "vns_${type}_version=\"([0-9.]+)\"" "$update_script_dir/vns-$type.sh" | cut -d '"' -f 2)
         echo "Script cài đặt cho hệ điều hành $type đã được cài đặt."
@@ -98,7 +98,7 @@ function check_and_update_platform_script {
             echo
             # Nếu có thì tải về và cập nhật.
             if [ "$choice" == "y" ]; then
-                wget "https://repo.vnscdn.com/vns/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
+                wget "https://vnscdn.com/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
                 # Kiểm tra xem tải về và cập nhật thành công hay không?
                 if [ "$?" -eq '0' ]; then
                     chmod +x "$update_script_dir/vns-$type.sh"
@@ -134,7 +134,7 @@ function check_update {
     if [ ! -e "$update_script_dir/vns.sh" ]; then
         echo "Tải về VNS Script..."
         echo
-        wget "https://repo.vnscdn.com/vns/vns.sh" -O "$update_script_dir/vns.sh"
+        wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
         if [ "$?" -eq '0' ]; then
             chmod +x "$update_script_dir/vns.sh"
             bash "$update_script_dir/vns.sh" "$*"
@@ -148,7 +148,7 @@ function check_update {
     # Nếu có rồi thì in ra thông báo đã cài đặt và phiên bản hiện tại.
     else
         # Lấy phiên bản mới nhất của VNS Script từ repo của VNSCDN.
-        latest_version=$(curl -s "https://repo.vnscdn.com/vns/latest-version.txt")
+        latest_version=$(curl -s "https://vnscdn.com/latest-version.txt")
         echo "VNS Script đã được cài đặt."
         echo
         echo "Phiên bản hiện tại của VNS Script là: $vns_version"
@@ -162,7 +162,7 @@ function check_update {
             echo
             # Nếu có thì tải về và cập nhật.
             if [ "$choice" == "y" ]; then
-                wget "https://repo.vnscdn.com/vns/vns.sh" -O "$update_script_dir/vns.sh"
+                wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
                 # Kiểm tra xem tải về và cập nhật thành công hay không?
                 if [ "$?" -eq '0' ]; then
                     chmod +x "$update_script_dir/vns.sh"
@@ -196,7 +196,7 @@ function check_update {
 # Hàm tạo web cho user với Python và Next.js thông qua proxy NGINX.
 function vns_web {
     # Tải script tạo web tương ứng cho hệ điều hành từ repo của VNSCDN về và chạy nó.
-    wget "https://repo.vnscdn.com/vns/platforms/vns-web-$type.sh" -O "$update_script_dir/vns-web-$type.sh"
+    wget "https://vnscdn.com/platforms/vns-web-$type.sh" -O "$update_script_dir/vns-web-$type.sh"
     if [ "$?" -eq '0' ]; then
         chmod +x "$update_script_dir/vns-web-$type.sh"
         bash "$update_script_dir/vns-web-$type.sh" "$*"
@@ -223,7 +223,7 @@ $0
     Ngày: 2023-08-25                                                                                    
     Phiên bản: 1.0.0                                                                                    
     Giấy phép: Giấy phép MIT                                                                            
-    Sử dụng: curl -sO https://repo.vnscdn.com/vns/vns.sh && chmod +x vns.sh && bash vns.sh          
+    Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
 =====================================================================================================
 =====================================================================================================
                                     THÔNG TIN PHIÊN BẢN PACKAGE                                      
@@ -257,7 +257,7 @@ else
     if [ ! -e "$update_script_dir/vns.sh" ]; then
         echo "Tải về VNS Script..."
         echo
-        wget "https://repo.vnscdn.com/vns/vns.sh" -O "$update_script_dir/vns.sh"
+        wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
         if [ "$?" -eq '0' ]; then
             chmod +x "$update_script_dir/vns.sh"
             bash "$update_script_dir/vns.sh" "$*"

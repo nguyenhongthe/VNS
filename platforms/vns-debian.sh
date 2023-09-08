@@ -7,14 +7,14 @@
 # Ngày: 2023-08-25
 # Phiên bản: 1.0.0
 # Giấy phép: Giấy phép MIT
-# Sử dụng: curl -sO https://repo.vnscdn.com/vns/platforms/vns-debian.sh && chmod +x vns-debian.sh && bash vns-debian.sh
+# Sử dụng: curl -sO https://vnscdn.com/platforms/vns-debian.sh && chmod +x vns-debian.sh && bash vns-debian.sh
 #=======================================================================================================================
 
 # Biến cho phiên bản và URL script
 vns_version="1.0.0"
 vns_debian_version="1.0.0"
 vns_website_version="1.0.0"
-script_url="https://repo.vnscdn.com/vns/"
+script_url="https://vnscdn.com/"
 desired_nginx_version="1.25.2"
 low_ram='400000' # 400MB
 recommended_ram='512000' # 512MB

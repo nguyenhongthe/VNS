@@ -228,7 +228,7 @@ else
     
     # Cài đặt các gói cần thiết để biên dịch
     sudo apt-get update
-    sudo apt-get install -y build-essential zlib1g-dev libpcre3-dev libssl-dev libgeoip-dev libfl-dev libperl-dev libxml2-dev libxslt-dev
+    sudo apt-get install -y build-essential zlib1g-dev libpcre3-dev libssl-dev libgeoip-dev libfl-dev libperl-dev libxml2-dev libxslt-dev libgd-dev
     
     # Configure và biên dịch Nginx
     ./configure \

@@ -275,10 +275,10 @@ else
         --with-mail=dynamic \
         --with-stream=dynamic \
         --with-stream_geoip_module=dynamic
-    make
+    sudo make
     sudo make install
-    mv /usr/sbin/nginx /usr/sbin/nginx.bak
-    cp objs/nginx /usr/sbin/nginx
+    sudo mv /usr/sbin/nginx /usr/sbin/nginx.bak
+    sudo cp objs/nginx /usr/sbin/nginx
     
     # Xóa thư mục tạm
     cd ~

@@ -168,7 +168,7 @@ sudo apt-get -y dist-upgrade
 
 # Cài đặt các gói cơ bản
 sudo apt-get install -y \
-    gawk bc wget curl memcached libmemcached-dev gettext lsof gnupg2 ca-certificates lsb-release debian-archive-keyring \
+    gawk bc wget curl memcached libmemcached-dev redis-server gettext lsof gnupg2 ca-certificates lsb-release debian-archive-keyring \
     ntp curl xclip git webp build-essential libgd-dev libssl-dev tcl8.6 \
     software-properties-common apt-transport-https dirmngr \
     vim unzip htop mosh sudo ncdu multitail ncftp tmux rsync zip jq lftp \

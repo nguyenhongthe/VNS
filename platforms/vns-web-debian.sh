@@ -24,7 +24,7 @@ curl -L http://install.ohmyz.sh | sh
 
 # Kích hoạt omyzsh cho user
 chsh -s /bin/zsh
-zsh
+exec zsh
 
 # Tạo các thư mục cần thiết
 mkdir -p ~/configs
@@ -35,9 +35,12 @@ mkdir -p ~/nextjs
 mkdir -p ~/ssl
 
 # Thông tin người dùng và cơ sở dữ liệu
-USERNAME="$username"
-PASSWORD="your_password"
-DATABASE="$username"
+USERNAME="'$username'_user"
+# Nhập password cho user
+echo "Nhập password cho user"
+read -p "Nhập password cho user: " password
+PASSWORD="'$password'"
+DATABASE="'$username'_db"
 
 # Đăng nhập vào PostgreSQL và thực hiện tạo người dùng và cơ sở dữ liệu
 sudo -u postgres psql << EOF

@@ -147,7 +147,7 @@ sudo timedatectl set-timezone Asia/Ho_Chi_Minh
 
 # Cài đặt thời gian sống của SSH
 # Kiểm tra xem cấu hình đã tồn tại trong tệp sshd_config hay chưa
-if grep -q "ClientAliveInterval" /etc/ssh/sshd_config; then
+if grep -q "ClientAliveInterval 120" /etc/ssh/sshd_config; then
     echo "Cấu hình ClientAliveInterval đã tồn tại. Không cần thay đổi."
 else
     # Thêm cấu hình ClientAliveInterval vào tệp sshd_config

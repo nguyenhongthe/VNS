@@ -340,6 +340,7 @@ fi
 
 # Kiểm tra nếu tham số là 'reinstall' thì chạy lại hàm cài đặt VNS Script.
 if [ "$1" == "reinstall" ]; then
+    update_script_dir=~
     bash "$update_script_dir/vns.sh" "$*"
     exit
 fi

@@ -1,3 +1,5 @@
+# CHANGELOG VNS SCRIPT - https://vnscdn.com
+
 + v1.0.0 - 25/08/2023:
     - Phát hành lần đầu.
     - Có thể sử dụng được.

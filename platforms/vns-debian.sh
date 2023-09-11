@@ -77,13 +77,15 @@ cpu_name=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo)
 cpu_cores=$(awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo)
 cpu_freq=$(awk -F: ' /cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo)
 server_ram_total=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
-server_ram_mb=`echo "scale=0;$server_ram_total/1024" | bc`
-low_ram_mb=`echo "scale=0;$low_ram/1024" | bc`
-recommended_ram_mb=`echo "scale=0;$recommended_ram/1024" | bc`
-server_hdd=$(echo `df -h --total | grep 'total' | awk '{print $2}'` | sed 's/[^0-9]*//g')
+server_ram_mb=$(echo "scale=0; $server_ram_total / 1024" | bc)
+low_ram=512 # Thay thế bằng giá trị RAM tối thiểu cho máy chủ của bạn
+low_ram_mb=$(echo "scale=0; $low_ram / 1024" | bc)
+recommended_ram=2048 # Thay thế bằng giá trị RAM khuyến nghị cho máy chủ của bạn
+recommended_ram_mb=$(echo "scale=0; $recommended_ram / 1024" | bc)
+server_hdd=$(echo $(df -h --total | grep 'total' | awk '{print $2}' | sed 's/[^0-9]*//g'))
 server_swap_total=$(awk '/SwapTotal/ {print $2}' /proc/meminfo)
-server_swap_mb=`echo "scale=0;$server_swap_total/1024" | bc`
-server_ip=$(hostname -I | awk ' {print $1}')
+server_swap_mb=$(echo "scale=0; $server_swap_total / 1024" | bc)
+server_ip=$(hostname -I | awk '{print $1}')
 
 clear
 
@@ -119,7 +121,7 @@ if ! command -v zsh &> /dev/null; then
     apt-get install git zsh
     curl -L http://install.ohmyz.sh | sh
     chsh -s /bin/zsh
-    zsh
+    exec zsh  # Thay thế quá trình hiện tại bằng phiên bản mới của Zsh
 else
     echo "Đã cài đặt zsh và oh-my-zsh trước đó. Bỏ qua..."
 fi
@@ -159,14 +161,14 @@ sudo apt-get install -y \
     curl xclip git webp build-essential libgd-dev libssl-dev tcl8.6 \
     software-properties-common apt-transport-https dirmngr \
     vim unzip htop mosh sudo ncdu multitail ncftp tmux rsync zip jq lftp \
-    libncurses5-dev libncursesw5-dev libreadline6-dev libdb-dev \
+    libncurses5-dev libncursesw5-dev libreadline-dev libdb-dev \
     libgdbm-dev libsqlite3-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev \
     libcurl4-openssl-dev libpam0g-dev libsystemd-dev libffi-dev liblzma-dev \
-    libxml2-dev libxslt1-dev libxslt-dev python-dev-is-python3 \
+    libxml2-dev libxslt1-dev python-dev-is-python3 \
     python3-dev python3-setuptools libtiff-dev libjpeg62-turbo-dev zlib1g-dev \
     libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
     libgraphicsmagick++1-dev libboost-python-dev libmagic1 python3-pil \
-    python3-pip python3-virtualenv python3-wheel python3-cffi python3-lxml python3.11-venv
+    python3-pip python3-virtualenv python3-wheel python3-cffi python3-lxml python3-venv
 
 # certbot
 sudo apt-get install -y certbot python3-certbot-nginx

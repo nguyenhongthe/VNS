@@ -211,6 +211,46 @@ function vns_web {
     fi
 }
 
+# Lấy phiên bản Python nếu có hoặc thông báo nếu chưa cài đặt.
+python_version=$(python3 -V 2>&1)
+if [ $? -eq 0 ]; then
+    python_version="Phiên bản Python: $python_version"
+else
+    python_version="Python chưa được cài đặt."
+fi
+
+# Lấy phiên bản Node.js nếu có hoặc thông báo nếu chưa cài đặt.
+node_version=$(node -v 2>&1)
+if [ $? -eq 0 ]; then
+    node_version="Phiên bản Node.js: $node_version"
+else
+    node_version="Node.js chưa được cài đặt."
+fi
+
+# Lấy phiên bản Yarn nếu có hoặc thông báo nếu chưa cài đặt.
+yarn_version=$(yarn -v 2>&1)
+if [ $? -eq 0 ]; then
+    yarn_version="Phiên bản Yarn: $yarn_version"
+else
+    yarn_version="Yarn chưa được cài đặt."
+fi
+
+# Lấy phiên bản PostgreSQL nếu có hoặc thông báo nếu chưa cài đặt.
+postgresql_version=$(psql --version 2>&1)
+if [ $? -eq 0 ]; then
+    postgresql_version="Phiên bản PostgreSQL: $postgresql_version"
+else
+    postgresql_version="PostgreSQL chưa được cài đặt."
+fi
+
+# Lấy phiên bản Nginx nếu có hoặc thông báo nếu chưa cài đặt.
+nginx_version=$(nginx -v 2>&1 | grep -o '[0-9.]*')
+if [ $? -eq 0 ]; then
+    nginx_version="Phiên bản Nginx: $nginx_version"
+else
+    nginx_version="Nginx chưa được cài đặt."
+fi
+
 # Hiển thị thông tin tác giả khi sử dụng tùy chọn 'info'.
 if [ "$1" == "info" ]; then
     cat <<EOF
@@ -229,18 +269,18 @@ $0
                                     THÔNG TIN PHIÊN BẢN PACKAGE                                      
 =====================================================================================================
 =====================================================================================================
-    Phiên bản VNS Script: $vns_version                                                                
-    Phiên bản VNS Script cho Debian: $vns_debian_version
-    Phiên bản VNS Script cho Ubuntu: $vns_ubuntu_version
-    Phiên bản VNS Script cho Amazon Linux: $vns_amazon_version
-    Phiên bản VNS Script cho RHEL: $vns_rhel_version
-    Phiên bản VNS Script cho VNS Website: $vns_website_version                                         
-    Script url:   $script_url                                                                           
-    Phiên bản Python: $(python3 -V)                                                                     
-    Phiên bản Node.js: $(node -v)                                                                       
-    Phiên bản Yarn: $(yarn -v)                                                                          
-    Phiên bản PostgreSQL: $(psql --version)                                                             
-    Phiên bản Nginx: $(nginx -v 2>&1 | grep -o '[0-9.]*')                                               
+    - Phiên bản VNS Script: $vns_version                                                                
+    - Phiên bản VNS Script cho Debian: $vns_debian_version
+    - Phiên bản VNS Script cho Ubuntu: $vns_ubuntu_version
+    - Phiên bản VNS Script cho Amazon Linux: $vns_amazon_version
+    - Phiên bản VNS Script cho RHEL: $vns_rhel_version
+    - Phiên bản VNS Script cho VNS Website: $vns_website_version                                         
+    - Script url: $script_url                                                                           
+    - $python_version
+    - $node_version
+    - $yarn_version
+    - $postgresql_version
+    - $nginx_version
 =====================================================================================================
 
 EOF

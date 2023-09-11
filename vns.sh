@@ -325,8 +325,8 @@ if [ "$1" == "web" ]; then
     exit
 fi
 
-# Kiểm tra nếu tham số là '-h' hoặc '--help' thì hiển thị hướng dẫn.
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+# Kiểm tra nếu không có tùy chọn hoặc tùy chọn là '-h' hoặc '--help', thì hiển thị hướng dẫn.
+if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     cat <<EOF
 Sử dụng: $0 [tùy chọn]
 

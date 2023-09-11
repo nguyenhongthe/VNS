@@ -251,6 +251,14 @@ else
     nginx_version="Nginx chưa được cài đặt."
 fi
 
+# Lấy phiên bản Supervisor nếu có hoặc thông báo nếu chưa cài đặt.
+supervisor_version=$(supervisord -v 2>&1)
+if [ $? -eq 0 ]; then
+    supervisor_version="Phiên bản Supervisor: $supervisor_version"
+else
+    supervisor_version="Supervisor chưa được cài đặt."
+fi
+
 # Hiển thị thông tin tác giả khi sử dụng tùy chọn 'info'.
 if [ "$1" == "info" ]; then
     cat <<EOF

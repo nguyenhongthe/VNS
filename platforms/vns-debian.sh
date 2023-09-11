@@ -142,6 +142,7 @@ export LC_MESSAGES=en_US.UTF-8
 EOT
 sudo locale-gen en_US.UTF-8
 sudo dpkg-reconfigure locales
+sudo timedatectl set-timezone Asia/Ho_Chi_Minh
 
 # Cài đặt thời gian sống của SSH
 echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config && service sshd restart
@@ -158,7 +159,7 @@ sudo apt-get -y dist-upgrade
 # Cài đặt các gói cơ bản
 sudo apt-get install -y \
     gawk bc wget curl memcached libmemcached-dev gettext lsof gnupg2 ca-certificates lsb-release debian-archive-keyring \
-    curl xclip git webp build-essential libgd-dev libssl-dev tcl8.6 \
+    ntp curl xclip git webp build-essential libgd-dev libssl-dev tcl8.6 \
     software-properties-common apt-transport-https dirmngr \
     vim unzip htop mosh sudo ncdu multitail ncftp tmux rsync zip jq lftp \
     libncurses5-dev libncursesw5-dev libreadline-dev libdb-dev \
@@ -349,6 +350,54 @@ else
     echo "Đã cài đặt Supervisor trước đó. Bỏ qua..."
 fi
 
+# Lấy phiên bản Python nếu có hoặc thông báo nếu chưa cài đặt.
+python_version=$(python3 -V 2>&1)
+if [ $? -eq 0 ]; then
+    python_version="Phiên bản Python: $python_version"
+else
+    python_version="Python chưa được cài đặt."
+fi
+
+# Lấy phiên bản Node.js nếu có hoặc thông báo nếu chưa cài đặt.
+node_version=$(node -v 2>&1)
+if [ $? -eq 0 ]; then
+    node_version="Phiên bản Node.js: $node_version"
+else
+    node_version="Node.js chưa được cài đặt."
+fi
+
+# Lấy phiên bản Yarn nếu có hoặc thông báo nếu chưa cài đặt.
+yarn_version=$(yarn -v 2>&1)
+if [ $? -eq 0 ]; then
+    yarn_version="Phiên bản Yarn: $yarn_version"
+else
+    yarn_version="Yarn chưa được cài đặt."
+fi
+
+# Lấy phiên bản PostgreSQL nếu có hoặc thông báo nếu chưa cài đặt.
+postgresql_version=$(psql --version 2>&1)
+if [ $? -eq 0 ]; then
+    postgresql_version="Phiên bản PostgreSQL: $postgresql_version"
+else
+    postgresql_version="PostgreSQL chưa được cài đặt."
+fi
+
+# Lấy phiên bản Nginx nếu có hoặc thông báo nếu chưa cài đặt.
+nginx_version=$(nginx -v 2>&1 | grep -o '[0-9.]*')
+if [ $? -eq 0 ]; then
+    nginx_version="Phiên bản Nginx: $nginx_version"
+else
+    nginx_version="Nginx chưa được cài đặt."
+fi
+
+# Lấy phiên bản Supervisor nếu có hoặc thông báo nếu chưa cài đặt.
+supervisor_version=$(supervisord -v 2>&1)
+if [ $? -eq 0 ]; then
+    supervisor_version="Phiên bản Supervisor: $supervisor_version"
+else
+    supervisor_version="Supervisor chưa được cài đặt."
+fi
+
 # In ra thông tin chi tiết về phiên bản các package đã cài đặt
 echo
 echo '==============================================================='
@@ -357,10 +406,12 @@ echo '==============================================================='
 echo "Phiên bản VNS Script: $vns_version"
 echo "Phiên bản VNS Script cho Debian: $vns_debian_version"
 echo "Phiên bản VNS Script cho Website: $vns_website_version"
-echo "Phiên bản Node.js: $(node -v)"
-echo "Phiên bản Yarn: $(yarn -v)"
-echo "Phiên bản PostgreSQL: $(psql --version)"
-echo "Phiên bản Nginx: $(nginx -v 2>&1 | grep -o '[0-9.]*')"
+echo "Phiên bản Python: $python_version"
+echo "Phiên bản Node.js: $node_version"
+echo "Phiên bản Yarn: $yarn_version"
+echo "Phiên bản PostgreSQL: $postgresql_version"
+echo "Phiên bản Nginx: $nginx_version"
+echo "Phiên bản Supervisor: $supervisor_version"
 echo '==============================================================='
 
 # Hoàn thành thông báo cài đặt

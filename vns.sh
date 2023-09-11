@@ -317,6 +317,7 @@ $0
     - $yarn_version
     - $postgresql_version
     - $nginx_version
+    - $supervisor_version
 =====================================================================================================
 
 EOF

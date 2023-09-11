@@ -5,7 +5,7 @@
 
 ## Mô tả
 
-VNS Script là một tập lệnh dùng để xây dựng máy chủ chạy web với Python và Next.js cho hệ điều hành Linux. Tập lệnh này hỗ trợ cài đặt và cập nhật các thành phần như Python, Node.js, Yarn, PostgreSQL, Nginx, và các công cụ hữu ích khác.
+VNS Script là một tập lệnh dùng để xây dựng máy chủ chạy web tương thích với Python và Next.js cho hệ điều hành Linux. Tập lệnh này hỗ trợ cài đặt và cập nhật các thành phần như Python, Node.js, Yarn, PostgreSQL, Nginx, Supervisord và các công cụ hữu ích khác.
 
 ## Cách sử dụng
 

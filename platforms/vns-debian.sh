@@ -2,17 +2,16 @@
 #=======================================================================================================================
 # Tên tập lệnh: vns-debian.sh
 # Mô tả: Xây dựng máy chủ chạy web với Python và Next.js thông qua proxy NGINX trên hệ điều hành Debian.
-# Đường dẫn: public/vns/platforms/vns-debian.sh
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
-# Ngày: 2023-08-25
-# Phiên bản: 1.0.0
+# Ngày: 2023-09-11
+# Phiên bản: 1.0.1
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/platforms/vns-debian.sh && chmod +x vns-debian.sh && bash vns-debian.sh
 #=======================================================================================================================
 
 # Biến cho phiên bản và URL script
 vns_version="1.0.0"
-vns_debian_version="1.0.0"
+vns_debian_version="1.0.1"
 vns_website_version="1.0.0"
 script_url="https://vnscdn.com/"
 desired_nginx_version="1.25.2"
@@ -142,10 +141,21 @@ export LC_MESSAGES=en_US.UTF-8
 EOT
 sudo locale-gen en_US.UTF-8
 sudo dpkg-reconfigure locales
+
+# Cài đặt thời gian hệ thống
 sudo timedatectl set-timezone Asia/Ho_Chi_Minh
 
 # Cài đặt thời gian sống của SSH
-echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config && service sshd restart
+# Kiểm tra xem cấu hình đã tồn tại trong tệp sshd_config hay chưa
+if grep -q "ClientAliveInterval" /etc/ssh/sshd_config; then
+    echo "Cấu hình ClientAliveInterval đã tồn tại. Không cần thay đổi."
+else
+    # Thêm cấu hình ClientAliveInterval vào tệp sshd_config
+    echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config
+    # Khởi động lại dịch vụ SSH
+    service sshd restart
+    echo "Đã thêm cấu hình ClientAliveInterval và khởi động lại dịch vụ SSH."
+fi
 
 # Những lệnh sau đây nên chạy với quyền root hoặc sudo
 # Có thể thêm -y để bỏ qua các thông báo xác nhận

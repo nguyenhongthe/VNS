@@ -1,8 +1,7 @@
 #!/bin/bash
 #==============================================================================================================
 # Tên tập lệnh: VNS Script
-# Mô tả: Xây dựng máy chủ chạy web với Python và Next.js cho Linux.
-# Đường dẫn: public/vns/vns.sh
+# Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
 # Ngày: 2023-08-25
 # Phiên bản: 1.0.0
@@ -12,7 +11,7 @@
 #==============================================================================================================
 
 vns_version="1.0.0"
-vns_debian_version="1.0.0"
+vns_debian_version="1.0.1"
 vns_ubuntu_version="1.0.0"
 vns_amazon_version="1.0.0"
 vns_rhel_version="1.0.0"
@@ -47,6 +46,28 @@ if [ ! -e '/usr/bin/wget' ] && [ ! -e '/usr/bin/curl' ]; then
         dnf install -y wget curl
     fi
 fi
+
+# Hàm in ra changelog của phiên bản mới của VNS Script (nếu có)
+function print_changelog {
+    latest_changelog=$(curl -s "https://vnscdn.com/changelog.txt")
+    if [ ! -z "$latest_changelog" ]; then
+        echo "Changelog của phiên bản mới:"
+        echo "$latest_changelog"
+    else
+        echo "Không có thông tin changelog cho phiên bản mới."
+    fi
+}
+
+# Hàm in ra changelog của phiên bản mới của script cài đặt cho hệ điều hành (nếu có)
+function print_platform_changelog {
+    latest_platform_changelog=$(curl -s "https://vnscdn.com/platforms/changelog-$type.txt")
+    if [ ! -z "$latest_platform_changelog" ]; then
+        echo "Changelog của phiên bản mới dành cho $type:"
+        echo "$latest_platform_changelog"
+    else
+        echo "Không có thông tin changelog cho phiên bản mới của $type."
+    fi
+}
 
 # Thư mục để chứa script.
 update_script_dir=~
@@ -96,6 +117,8 @@ function check_and_update_platform_script {
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản $latest_version_platform cho $type không? (y/n): " choice
             echo
+            # In ra changelog của phiên bản của hệ điều hành.
+            print_platform_changelog
             # Nếu có thì tải về và cập nhật.
             if [ "$choice" == "y" ]; then
                 wget "https://vnscdn.com/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
@@ -157,6 +180,8 @@ function check_update {
         if [ "$latest_version" != "$vns_version" ]; then
             echo "Mhiên bản mới của VNS Script là: $latest_version"
             echo
+            # In ra changelog của phiên bản mới của VNS Script.
+            print_changelog
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản của VNS Script không? (y/n): " choice
             echo
@@ -265,8 +290,7 @@ if [ "$1" == "info" ]; then
 $0 
 #=====================================================================================================
     Tên tập lệnh: VNS Script                                                                               
-    Mô tả: Xây dựng máy chủ chạy web với Python và Next.js là phía frontend cho Linux.  
-    Đường dẫn: public/vns/vns.sh                                                                      
+    Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.                                                                       
     Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>                                                        
     Ngày: 2023-08-25                                                                                    
     Phiên bản: 1.0.0                                                                                    

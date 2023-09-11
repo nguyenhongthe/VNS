@@ -51,8 +51,9 @@ fi
 function print_changelog {
     latest_changelog=$(curl -s "https://vnscdn.com/changelog-latest.txt")
     if [ ! -z "$latest_changelog" ]; then
-        echo "Changelog của phiên bản mới:"
+        echo "Changelog của phiên bản mới nhất của VNS Script:"
         echo "$latest_changelog"
+        echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/changelog.txt"
     else
         echo "Không có thông tin changelog cho phiên bản mới."
     fi
@@ -64,6 +65,7 @@ function print_platform_changelog {
     if [ ! -z "$latest_platform_changelog" ]; then
         echo "Changelog của phiên bản mới dành cho $type:"
         echo "$latest_platform_changelog"
+        echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/platforms/changelog-$type.txt"
     else
         echo "Không có thông tin changelog cho phiên bản mới của $type."
     fi
@@ -116,8 +118,6 @@ function check_and_update_platform_script {
             echo
             # In ra changelog của phiên bản của hệ điều hành.
             print_platform_changelog
-            # In ra liên kết để xem changelog trên trình duyệt.
-            echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/platforms/changelog-$type.txt"
             echo
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản $latest_version_platform cho $type không? (y/n): " choice
@@ -185,8 +185,6 @@ function check_update {
             echo
             # In ra changelog của phiên bản mới của VNS Script.
             print_changelog
-            # In ra liên kết để xem changelog trên trình duyệt.
-            echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/changelog.txt"
             echo
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản của VNS Script không? (y/n): " choice

@@ -341,9 +341,18 @@ fi
 # Kiểm tra nếu tham số là 'reinstall' thì chạy lại hàm cài đặt VNS Script.
 if [ "$1" == "reinstall" ]; then
     update_script_dir=~
-    bash "$update_script_dir/vns.sh" "$*"
+    curl -sO https://vnscdn.com/vns.sh
+    bash "$update_script_dir/vns.sh"
     exit
 fi
+
+# Kiểm tra nếu tham số là 'reinstall-$type' thì chạy hàm cài đặt cho $type.
+if [ "$1" == "reinstall-$type" ]; then
+    update_script_dir=~
+    curl -sO "https://vnscdn.com/platforms/vns-$type.sh"
+    bash "$update_script_dir/vns-$type.sh"
+    exit
+fi 
 
 # Kiểm tra nếu tham số là 'check-update' thì chạy hàm kiểm tra và cập nhật VNS Script và script cài đặt cho hệ điều hành.
 if [ "$1" == "check-update" ]; then

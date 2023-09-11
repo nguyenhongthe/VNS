@@ -338,6 +338,18 @@ if [ "$1" == "changelog" ]; then
     exit
 fi
 
+# Kiểm tra nếu tham số là 'reinstall' thì chạy lại hàm cài đặt VNS Script.
+if [ "$1" == "reinstall" ]; then
+    bash "$update_script_dir/vns.sh" "$*"
+    exit
+fi
+
+# Kiểm tra nếu tham số là 'check-update' thì chạy hàm kiểm tra và cập nhật VNS Script và script cài đặt cho hệ điều hành.
+if [ "$1" == "check-update" ]; then
+    check_update
+    exit
+fi
+
 # Kiểm tra số lượng tham số được cung cấp
 if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     cat <<EOF
@@ -349,37 +361,9 @@ Tùy chọn:
     check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
     changelog       In ra changelog của phiên bản mới nhất.
     web             Tạo web cho user với Python và Next.js thông qua proxy NGINX.
-    install         Cài đặt VNS Script (nếu chưa tồn tại).
+    reinstall       Cài đặt lại VNS Script.
 EOF
     exit 0
-fi
-
-# Kiểm tra xem VNS Script đã tồn tại chưa hoặc nếu tham số là 'install' thì cài đặt
-if [ ! -e "$update_script_dir/vns.sh" ] || [ "$1" == "install" ]; then
-    echo "Tải về VNS Script..."
-    echo
-    wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
-    if [ "$?" -eq '0' ]; then
-        chmod +x "$update_script_dir/vns.sh"
-        bash "$update_script_dir/vns.sh" "$*"
-        add_update_check_cron
-        exit
-    else
-        echo "Lỗi trong quá trình tải về và cài đặt VNS Script."
-        echo
-        exit 1
-    fi
-# Nếu có rồi thì in ra thông báo đã cài đặt và phiên bản hiện tại.
-else
-    echo "VNS Script đã được cài đặt."
-    echo
-    echo "Phiên bản hiện tại của VNS Script là: $vns_version"
-    echo
-    # Gọi hàm kiểm tra và cập nhật script cài đặt cho hệ điều hành nếu tham số là 'check-update'.
-    if [ "$1" == "check-update" ]; then
-        check_update
-        exit
-    fi
 fi
 
 exit

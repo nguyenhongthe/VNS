@@ -181,6 +181,26 @@ sudo apt-get install -y \
     libgraphicsmagick++1-dev libboost-python-dev libmagic1 python3-pil \
     python3-pip python3-virtualenv python3-wheel python3-cffi python3-lxml python3-venv
 
+# Cài đặt pyenv
+# Kiểm tra xem đã cài đặt pyenv chưa
+if ! command -v pyenv &> /dev/null; then
+    echo "Cài đặt pyenv..."
+    curl https://pyenv.run | bash
+    echo 'PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+    echo 'PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+    echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+    exec zsh
+    echo "Đã cài đặt pyenv thành công với phiên bản: $(pyenv --version)"
+    # Cài đặt Python 3.11.5
+    pyenv install 3.11.5
+    pyenv global 3.11.5
+    exec zsh
+    echo "Đã cài đặt thành công với phiên bản: $(python --version)"
+else
+    echo "Đã cài đặt pyenv trước đó. Bỏ qua..."
+fi
+
 # certbot
 sudo apt-get install -y certbot python3-certbot-nginx
 

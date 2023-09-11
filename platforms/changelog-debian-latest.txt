@@ -1,0 +1,3 @@
++ v1.0.1 - 11/09/2023:
+    - Cập nhật thêm 1 số tính năng mới.
+    - Sửa lỗi nhỏ và nâng cao tính ổn định.

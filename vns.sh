@@ -49,7 +49,7 @@ fi
 
 # Hàm in ra changelog của phiên bản mới của VNS Script (nếu có)
 function print_changelog {
-    latest_changelog=$(curl -s "https://vnscdn.com/changelog.txt")
+    latest_changelog=$(curl -s "https://vnscdn.com/changelog-latest.txt")
     if [ ! -z "$latest_changelog" ]; then
         echo "Changelog của phiên bản mới:"
         echo "$latest_changelog"
@@ -60,7 +60,7 @@ function print_changelog {
 
 # Hàm in ra changelog của phiên bản mới của script cài đặt cho hệ điều hành (nếu có)
 function print_platform_changelog {
-    latest_platform_changelog=$(curl -s "https://vnscdn.com/platforms/changelog-$type.txt")
+    latest_platform_changelog=$(curl -s "https://vnscdn.com/platforms/changelog-$type-latest.txt")
     if [ ! -z "$latest_platform_changelog" ]; then
         echo "Changelog của phiên bản mới dành cho $type:"
         echo "$latest_platform_changelog"
@@ -114,11 +114,14 @@ function check_and_update_platform_script {
         if [ "$latest_version_platform" != "$current_version_platform" ]; then
             echo "Phiên bản mới của script cài đặt cho hệ điều hành $type là: $latest_version_platform"
             echo
+            # In ra changelog của phiên bản của hệ điều hành.
+            print_platform_changelog
+            # In ra liên kết để xem changelog trên trình duyệt.
+            echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/platforms/changelog-$type.txt"
+            echo
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản $latest_version_platform cho $type không? (y/n): " choice
             echo
-            # In ra changelog của phiên bản của hệ điều hành.
-            print_platform_changelog
             # Nếu có thì tải về và cập nhật.
             if [ "$choice" == "y" ]; then
                 wget "https://vnscdn.com/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
@@ -182,6 +185,9 @@ function check_update {
             echo
             # In ra changelog của phiên bản mới của VNS Script.
             print_changelog
+            # In ra liên kết để xem changelog trên trình duyệt.
+            echo "Xem changelog đầy đủ trên trình duyệt: https://vnscdn.com/changelog.txt"
+            echo
             # Nếu khác thì hỏi người dùng có muốn tải về và cập nhật không?
             read -p "Bạn có muốn tải về và cập nhật phiên bản của VNS Script không? (y/n): " choice
             echo
@@ -319,45 +325,21 @@ EOF
     exit 0
 fi
 
-# Kiểm tra nếu tham số là 'check-update' thì chỉ chạy hàm kiểm tra cập nhật.
-if [ "$1" == "check-update" ]; then
-    check_update
-    exit
-# Nếu không thì chỉ chạy cài đặt.
-else
-    # Kiểm tra xem VNS Script đã tồn tại chưa? Nếu chưa thì tải về và cài đặt.
-    if [ ! -e "$update_script_dir/vns.sh" ]; then
-        echo "Tải về VNS Script..."
-        echo
-        wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
-        if [ "$?" -eq '0' ]; then
-            chmod +x "$update_script_dir/vns.sh"
-            bash "$update_script_dir/vns.sh" "$*"
-            add_update_check_cron
-            exit
-        else
-            echo "Lỗi trong quá trình tải về và cài đặt VNS Script."
-            echo
-            exit 1
-        fi
-    # Nếu có rồi thì in ra thông báo đã cài đặt và phiên bản hiện tại.
-    else
-        echo "VNS Script đã được cài đặt."
-        echo
-        echo "Phiên bản hiện tại của VNS Script là: $vns_version"
-        echo
-        # Gọi hàm kiểm tra và cập nhật script cài đặt cho hệ điều hành.
-        check_and_update_platform_script "$*"
-    fi
-fi
-
 # Kiểm tra nếu tham số là 'web' thì chỉ chạy hàm tạo web.
 if [ "$1" == "web" ]; then
     vns_web
     exit
 fi
 
-# Kiểm tra nếu không có tùy chọn hoặc tùy chọn là '-h' hoặc '--help', thì hiển thị hướng dẫn.
+# Kiểm tra nếu tham số là 'changelog' thì chạy hàm in ra changelog của phiên bản mới nhất.
+if [ "$1" == "changelog" ]; then
+    print_changelog
+    echo
+    print_platform_changelog
+    exit
+fi
+
+# Kiểm tra số lượng tham số được cung cấp
 if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     cat <<EOF
 Sử dụng: $0 [tùy chọn]
@@ -366,9 +348,39 @@ Tùy chọn:
     info            Hiển thị thông tin script.
     -h, --help      Hiển thị hướng dẫn sử dụng.
     check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
+    changelog       In ra changelog của phiên bản mới nhất.
     web             Tạo web cho user với Python và Next.js thông qua proxy NGINX.
+    install         Cài đặt VNS Script (nếu chưa tồn tại).
 EOF
     exit 0
+fi
+
+# Kiểm tra xem VNS Script đã tồn tại chưa hoặc nếu tham số là 'install' thì cài đặt
+if [ ! -e "$update_script_dir/vns.sh" ] || [ "$1" == "install" ]; then
+    echo "Tải về VNS Script..."
+    echo
+    wget "https://vnscdn.com/vns.sh" -O "$update_script_dir/vns.sh"
+    if [ "$?" -eq '0' ]; then
+        chmod +x "$update_script_dir/vns.sh"
+        bash "$update_script_dir/vns.sh" "$*"
+        add_update_check_cron
+        exit
+    else
+        echo "Lỗi trong quá trình tải về và cài đặt VNS Script."
+        echo
+        exit 1
+    fi
+# Nếu có rồi thì in ra thông báo đã cài đặt và phiên bản hiện tại.
+else
+    echo "VNS Script đã được cài đặt."
+    echo
+    echo "Phiên bản hiện tại của VNS Script là: $vns_version"
+    echo
+    # Gọi hàm kiểm tra và cập nhật script cài đặt cho hệ điều hành nếu tham số là 'check-update'.
+    if [ "$1" == "check-update" ]; then
+        check_update
+        exit
+    fi
 fi
 
 exit

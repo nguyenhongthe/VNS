@@ -14,17 +14,10 @@ echo "Tạo user"
 read -p "Nhập tên user: " username
 adduser $username
 
-# Chuyển sang user vừa tạo
-echo "Chuyển sang user vừa tạo"
-su - $username
+# Chuyển sang user vừa tạo và chạy Zsh
+echo "Chuyển sang user vừa tạo và chạy Zsh..."
+su - $username -c "curl -L http://install.ohmyz.sh | sh && exec zsh"
 echo
-
-# Cài omyzsh cho user
-echo "Cài omyzsh cho user..."
-curl -L http://install.ohmyz.sh | sh
-echo
-# Kích hoạt omyzsh cho user
-exec zsh
 
 # Tạo các thư mục cần thiết
 echo "Tạo các thư mục cần thiết..."
@@ -40,11 +33,6 @@ mkdir -p ~/nextjs
 echo "Tạo thư mục ~/nextjs thành công."
 mkdir -p ~/ssl
 echo "Tạo thư mục ~/ssl thành công."
-
-# Thoát khỏi user
-echo "Thoát khỏi user..."
-
-exit
 
 echo "Cấu hình cơ bản cho user $username đã hoàn tất."
 echo

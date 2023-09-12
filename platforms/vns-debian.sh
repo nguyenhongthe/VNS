@@ -119,6 +119,7 @@ if ! command -v zsh &> /dev/null; then
     echo "Cài đặt zsh và oh-my-zsh..."
     apt-get install git zsh
     curl -L http://install.ohmyz.sh | sh
+    # Thay đổi shell mặc định thành Zsh
     chsh -s /bin/zsh
     exec zsh  # Thay thế quá trình hiện tại bằng phiên bản mới của Zsh
 else

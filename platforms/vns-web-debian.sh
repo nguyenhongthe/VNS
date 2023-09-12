@@ -15,25 +15,6 @@ echo "Tạo user"
 read -p "Nhập tên user: " username
 adduser $username
 
-# Chuyển sang user vừa tạo
-echo "Chuyển sang user vừa tạo"
-su - $username
-
-# Cài omyzsh cho user
-curl -L http://install.ohmyz.sh | sh
-
-# Kích hoạt omyzsh cho user
-chsh -s /bin/zsh
-exec zsh
-
-# Tạo các thư mục cần thiết
-mkdir -p ~/configs
-mkdir -p ~/logs
-mkdir -p ~/commands
-mkdir -p ~/django/src
-mkdir -p ~/nextjs
-mkdir -p ~/ssl
-
 # Thông tin người dùng và cơ sở dữ liệu
 USERNAME="'$username'_user"
 # Nhập password cho user
@@ -55,3 +36,26 @@ EOF
 
 # Thông báo hoàn thành
 echo "User $USERNAME and database $DATABASE have been created with appropriate privileges."
+
+# Chuyển sang user vừa tạo
+echo "Chuyển sang user vừa tạo"
+su - $username
+
+# Cài omyzsh cho user
+curl -L http://install.ohmyz.sh | sh
+
+# Thay đổi shell mặc định thành Zsh
+chsh -s /bin/zsh
+# Kích hoạt omyzsh cho user
+exec zsh
+
+# Tạo các thư mục cần thiết
+mkdir -p ~/configs
+mkdir -p ~/logs
+mkdir -p ~/commands
+mkdir -p ~/django/src
+mkdir -p ~/nextjs
+mkdir -p ~/ssl
+
+# Thoát khỏi user
+exit

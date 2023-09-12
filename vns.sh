@@ -3,14 +3,14 @@
 # Tên tập lệnh: VNS Script
 # Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
-# Ngày: 2023-08-25
-# Phiên bản: 1.0.0
+# Ngày: 2023-09-12
+# Phiên bản: 1.0.1
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
 # Hoặc: wget https://vnscdn.com/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
 #==============================================================================================================
 
-vns_version="1.0.0"
+vns_version="1.0.1"
 vns_debian_version="1.0.1"
 vns_ubuntu_version="1.0.0"
 vns_amazon_version="1.0.0"
@@ -224,22 +224,57 @@ function check_update {
 
 # Hàm tạo web cho user với cấu hình mặc định.
 function vns_web {
-    # Tải script tạo web tương ứng cho hệ điều hành từ repo của VNSCDN về và chạy nó.
-    wget "https://vnscdn.com/platforms/vns-web-$type.sh" -O "$update_script_dir/vns-web-$type.sh"
-    if [ "$?" -eq '0' ]; then
-        chmod +x "$update_script_dir/vns-web-$type.sh"
+    # Kiểm tra xem script tạo web đã tồn tại chưa? Nếu chưa thì tải script tương ứng cho hệ điều hành từ repo của VNSCDN về và chạy nó.
+    if [ ! -e "$update_script_dir/vns-web-$type.sh" ]; then
+        wget "https://vnscdn.com/platforms/vns-web-$type.sh" -O "$update_script_dir/vns-web-$type.sh"
+        if [ "$?" -eq '0' ]; then
+            chmod +x "$update_script_dir/vns-web-$type.sh"
+            bash "$update_script_dir/vns-web-$type.sh" "$*"
+            echo
+            echo "Cài đặt web cho user hoàn tất."
+            echo
+            exit
+        else
+            echo "Lỗi trong quá trình tải về và cài đặt web cho user."
+            echo
+            exit 1
+        fi
+    # Nếu có rồi thì chạy luôn khỏi cần tải.
+    else
         bash "$update_script_dir/vns-web-$type.sh" "$*"
         echo
         echo "Cài đặt web cho user hoàn tất."
         echo
         exit
-    else
-        echo "Lỗi trong quá trình tải về và cài đặt web cho user."
-        echo
-        exit 1
     fi
 }
 
+# Hàm quản lý cơ sở dữ liệu postgresql.
+function vns_db_postgresql {
+    # Kiểm tra xem script quản lý cơ sở dữ liệu postgresql đã tồn tại chưa? Nếu chưa thì tải về và chạy nó.
+    if [ ! -e "$update_script_dir/vns-db-postgresql.sh" ]; then
+        wget "https://vnscdn.com/vns-db-postgresql.sh" -O "$update_script_dir/vns-db-postgresql.sh"
+        if [ "$?" -eq '0' ]; then
+            chmod +x "$update_script_dir/vns-db-postgresql.sh"
+            bash "$update_script_dir/vns-db-postgresql.sh"
+            echo
+            echo "Cài đặt cơ sở dữ liệu PostgreSQL hoàn tất."
+            echo
+            exit
+        else
+            echo "Lỗi trong quá trình tải về và cài đặt cơ sở dữ liệu PostgreSQL."
+            echo
+            exit 1
+        fi
+    # Nếu có rồi thì chạy luôn khỏi cần tải.
+    else
+        bash "$update_script_dir/vns-db-postgresql.sh"
+        echo
+        echo "Cài đặt cơ sở dữ liệu PostgreSQL hoàn tất."
+        echo
+        exit
+    fi
+}
 # Lấy phiên bản Python nếu có hoặc thông báo nếu chưa cài đặt.
 python_version=$(python3 -V 2>&1)
 if [ $? -eq 0 ]; then
@@ -296,8 +331,8 @@ $0
     Tên tập lệnh: VNS Script                                                                               
     Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.                                                                       
     Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>                                                        
-    Ngày: 2023-08-25                                                                                    
-    Phiên bản: 1.0.0                                                                                    
+    Ngày: 2023-09-12                                                                                    
+    Phiên bản: $vns_version                                                                                    
     Giấy phép: Giấy phép MIT                                                                            
     Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
 =====================================================================================================
@@ -327,6 +362,12 @@ fi
 # Kiểm tra nếu tham số là 'web' thì chỉ chạy hàm tạo web.
 if [ "$1" == "web" ]; then
     vns_web
+    exit
+fi
+
+# Kiểm tra nếu tham số là 'db-postgresql' thì chỉ chạy hàm quản lý cơ sở dữ liệu postgresql.
+if [ "$1" == "db-postgresql" ]; then
+    vns_db_postgresql
     exit
 fi
 
@@ -371,6 +412,7 @@ Tùy chọn:
     check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
     changelog       In ra changelog của phiên bản mới nhất.
     web             Tạo cấu hình mặc định cho user để chạy web.
+    db-postgresql   Quản lý cơ sở dữ liệu PostgreSQL.
     reinstall       Cài đặt lại VNS Script.
 EOF
     exit 0

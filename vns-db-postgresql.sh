@@ -68,7 +68,7 @@ done
 
 # Thay đổi mật khẩu cho người dùng postgres
 if [ "$change_postgres_password" = true ]; then
-    read -p "Nhập mật khẩu mới cho người dùng postgres: " postgres_new_password
+    read -s -p "Nhập mật khẩu mới cho người dùng postgres: " postgres_new_password
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$postgres_new_password';"
     if [ $? -eq 0 ]; then
         echo "Đổi mật khẩu cho người dùng postgres thành công"

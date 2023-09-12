@@ -9,30 +9,33 @@
 # Sử dụng: curl -sO https://vnscdn.com/platforms/vns-web-debian.sh && chmod +x vns-web-debian.sh && bash vns-web-debian.sh
 #=======================================================================================================================
 
+# Hàm tạo thư mục cho user
+create_user_directory() {
+    local user="$1"
+    local directory="$2"
+
+    echo "Tạo thư mục $directory thành công. Để lưu trữ các file $directory."
+    su - "$user" -c "mkdir -p ~/$directory"
+}
+
 # Tạo user
 echo "Tạo user"
 read -p "Nhập tên user: " username
-adduser $username
+adduser "$username"
 
 # Chuyển sang user vừa tạo và chạy Zsh
 echo "Chuyển sang user vừa tạo và chạy Zsh..."
-su - $username -c "curl -L http://install.ohmyz.sh | sh && exec zsh"
+su - "$username" -c "curl -L http://install.ohmyz.sh | sh && exec zsh &"
 echo
 
 # Tạo các thư mục cần thiết
 echo "Tạo các thư mục cần thiết..."
-mkdir -p ~/configs
-echo "Tạo thư mục ~/configs thành công."
-mkdir -p ~/logs
-echo "Tạo thư mục ~/logs thành công."
-mkdir -p ~/commands
-echo "Tạo thư mục ~/commands thành công."
-mkdir -p ~/www
-echo "Tạo thư mục ~/www thành công."
-mkdir -p ~/nextjs
-echo "Tạo thư mục ~/nextjs thành công."
-mkdir -p ~/ssl
-echo "Tạo thư mục ~/ssl thành công."
+create_user_directory "$username" "configs"
+create_user_directory "$username" "logs"
+create_user_directory "$username" "commands"
+create_user_directory "$username" "www"
+create_user_directory "$username" "nextjs"
+create_user_directory "$username" "ssl"
 
 echo "Cấu hình cơ bản cho user $username đã hoàn tất."
 echo

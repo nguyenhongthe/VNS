@@ -4,7 +4,7 @@
 # Mô tả: Quản lý cơ sở dữ liệu PostgreSQL.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
 # Ngày: 2023-09-12
-# Phiên bản: 1.0.8
+# Phiên bản: 1.0.9
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
@@ -19,6 +19,7 @@ print_usage() {
     echo "Tùy chọn:"
     echo "  -h, --help              Hiển thị hướng dẫn sử dụng"
     echo "  -u, --create-user       Tạo người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
+    echo "  -d, --delete-user       Xóa người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
     echo "  -e, --empty-schema      Làm rỗng và tạo lại schema"
     echo "  -i, --import-db         Import cơ sở dữ liệu từ file"
     echo "  -x, --export-db         Export cơ sở dữ liệu ra file"
@@ -40,6 +41,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -u|--create-user)
             create_user=true
+            shift
+            ;;
+        -d|--delete-user)
+            delete_user=true
             shift
             ;;
         -e|--empty-schema)

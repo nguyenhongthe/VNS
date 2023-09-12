@@ -14,7 +14,7 @@ create_user_directory() {
     local user="$1"
     local directory="$2"
 
-    echo "Tạo thư mục $directory thành công. Để lưu trữ các file $directory."
+    echo "Tạo thư mục $directory tại /home/$user/$directory thành công. Để lưu trữ các file $directory."
     su - "$user" -c "mkdir -p ~/$directory"
 }
 
@@ -43,8 +43,7 @@ create_user_directory "$username" "nextjs"
 echo
 create_user_directory "$username" "ssl"
 echo
-
-# Thoát khỏi user vừa tạo
-echo "Thoát khỏi user vừa tạo..."
 echo "Cấu hình cơ bản cho user $username đã hoàn tất."
 echo
+# Thoát khỏi user vừa tạo
+echo "Thoát khỏi user vừa tạo..."

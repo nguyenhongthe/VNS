@@ -79,6 +79,9 @@ fi
 
 # Tạo người dùng và cơ sở dữ liệu mới
 if [ "$create_user" = true ]; then
+    # Nhập mật khẩu cho người dùng postgres
+    read -s -p "Nhập mật khẩu cho người dùng postgres: " postgres_password
+    echo
     read -p "Nhập tên người dùng mới: " new_user
     echo
     read -s -p "Nhập mật khẩu cho người dùng $new_user: " new_user_password
@@ -86,25 +89,25 @@ if [ "$create_user" = true ]; then
     read -p "Nhập tên cơ sở dữ liệu mới cho người dùng $new_user: " new_database
 
     # Tạo người dùng
-    sudo -u postgres psql -h "$host" -p "$port" -c "CREATE USER $new_user WITH ENCRYPTED PASSWORD '$new_user_password';"
+    sudo -U postgres psql -h "$host" -p "$port" -c "CREATE USER $new_user WITH ENCRYPTED PASSWORD '$new_user_password';"
 
     # Tạo cơ sở dữ liệu và gán quyền cho người dùng
-    sudo -u postgres psql -h "$host" -p "$port" -c "CREATE DATABASE $new_database OWNER $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -c "CREATE DATABASE $new_database OWNER $new_user;"
 
     # Gán quyền truy cập vào cơ sở dữ liệu
-    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT CONNECT ON DATABASE $new_database TO $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT CONNECT ON DATABASE $new_database TO $new_user;"
 
     # Gán quyền truy cập vào schema public
-    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE ON SCHEMA public TO $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE ON SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các bảng trong schema public
-    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các sequence trong schema public (nếu có)
-    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các function trong schema public (nếu có)
-    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $new_user;"
+    sudo -U postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $new_user;"
 
     if [ $? -eq 0 ]; then
         echo "Tạo người dùng và cơ sở dữ liệu thành công"

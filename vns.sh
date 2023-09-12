@@ -222,7 +222,7 @@ function check_update {
     check_and_update_platform_script "$*"
 }
 
-# Hàm tạo web cho user với Python và Next.js thông qua proxy NGINX.
+# Hàm tạo web cho user với cấu hình mặc định.
 function vns_web {
     # Tải script tạo web tương ứng cho hệ điều hành từ repo của VNSCDN về và chạy nó.
     wget "https://vnscdn.com/platforms/vns-web-$type.sh" -O "$update_script_dir/vns-web-$type.sh"
@@ -370,7 +370,7 @@ Tùy chọn:
     -h, --help      Hiển thị hướng dẫn sử dụng.
     check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
     changelog       In ra changelog của phiên bản mới nhất.
-    web             Tạo web cho user với Python và Next.js thông qua proxy NGINX.
+    web             Tạo cấu hình mặc định cho user để chạy web.
     reinstall       Cài đặt lại VNS Script.
 EOF
     exit 0

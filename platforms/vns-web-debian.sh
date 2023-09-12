@@ -35,13 +35,16 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $USERNAME;
 EOF
 
 # Thông báo hoàn thành
-echo "User $USERNAME and database $DATABASE have been created with appropriate privileges."
+echo "Người dùng $USERNAME và database $DATABASE đã được tạo với các quyền thích hợp."
+echo
 
 # Chuyển sang user vừa tạo
 echo "Chuyển sang user vừa tạo"
 su - $username
+echo
 
 # Cài omyzsh cho user
+echo "Cài omyzsh cho user..."
 curl -L http://install.ohmyz.sh | sh
 
 # Thay đổi shell mặc định thành Zsh
@@ -53,9 +56,12 @@ exec zsh
 mkdir -p ~/configs
 mkdir -p ~/logs
 mkdir -p ~/commands
-mkdir -p ~/django/src
+mkdir -p ~/www
 mkdir -p ~/nextjs
 mkdir -p ~/ssl
 
 # Thoát khỏi user
 exit
+
+echo "Cấu hình cơ bản cho user $username đã hoàn tất."
+echo

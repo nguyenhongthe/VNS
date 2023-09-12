@@ -4,15 +4,15 @@
 # Mô tả: Quản lý cơ sở dữ liệu PostgreSQL.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
 # Ngày: 2023-09-12
-# Phiên bản: 1.0.4
+# Phiên bản: 1.0.5
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
 
 # PostgreSQL Database Management Script
 
-DEFAULT_HOST="localhost"  # Giá trị mặc định cho host PostgreSQL
-DEFAULT_PORT="5432"  # Giá trị mặc định cho cổng PostgreSQL
+host="localhost"  # Giá trị mặc định cho host PostgreSQL
+port="5432"  # Giá trị mặc định cho cổng PostgreSQL
 
 print_usage() {
     echo "Sử dụng: $0 [Tùy chọn]"
@@ -76,13 +76,6 @@ if [ "$change_postgres_password" = true ]; then
         echo "Lỗi khi đổi mật khẩu cho người dùng postgres"
     fi
 fi
-
-# Nhập thông tin cấu hình của PostgreSQL
-read -p "Nhập host của PostgreSQL (mặc định: $DEFAULT_HOST): " host
-host=${host:-"$DEFAULT_HOST"}
-
-read -p "Nhập cổng PostgreSQL (mặc định: $DEFAULT_PORT): " port
-port=${port:-"$DEFAULT_PORT"}
 
 # Tạo người dùng và cơ sở dữ liệu mới
 if [ "$create_user" = true ]; then

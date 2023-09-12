@@ -4,7 +4,7 @@
 # Mô tả: Quản lý cơ sở dữ liệu PostgreSQL.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
 # Ngày: 2023-09-12
-# Phiên bản: 1.0.7
+# Phiên bản: 1.0.8
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
@@ -82,15 +82,10 @@ if [ "$create_user" = true ]; then
     # Nhập mật khẩu cho người dùng postgres
     echo
     read -s -p "Nhập mật khẩu cho người dùng postgres: " postgres_password
-    echo
     read -p "Nhập tên người dùng mới: " new_user
-    echo
     read -s -p "Nhập mật khẩu cho người dùng $new_user: " new_user_password
-    echo
     read -p "Nhập tên cơ sở dữ liệu mới cho người dùng $new_user: " new_database
-
-    # Sử dụng tài khoản postgres để tạo người dùng và cơ sở dữ liệu
-    PGPASSWORD="$postgres_password"
+    echo
 
     # Tạo người dùng sử dụng PGPASSWORD
     PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -c "CREATE USER $new_user WITH ENCRYPTED PASSWORD '$new_user_password';"
@@ -118,6 +113,31 @@ if [ "$create_user" = true ]; then
         echo "Tạo người dùng và cơ sở dữ liệu thành công"
     else
         echo "Lỗi khi tạo người dùng và cơ sở dữ liệu"
+    fi
+fi
+
+# Xóa người dùng và cơ sở dữ liệu
+if [ "$delete_user" = true ]; then
+    echo
+    read -s -p "Nhập mật khẩu PostgreSQL của người dùng postgres: " postgres_password
+    echo
+    echo
+    echo -e "\e[1;31mBạn đang thực hiện thao tác xóa người dùng và cơ sở dữ liệu PostgreSQL\e[0m"
+    echo
+    echo -e "\e[1;31mHÃY THAO TÁC CẨN THẬN!\e[0m"
+    echo
+    read -p "Nhập tên người dùng PostgreSQL cần xóa: " user
+    read -p "Nhập tên cơ sở dữ liệu PostgreSQL cần xóa: " database
+    echo
+
+    PGPASSWORD="$postgres_password" psql -U "$user" -h "$host" -p "$port" -c "DROP DATABASE $database;"
+    PGPASSWORD="$postgres_password" psql -U "$user" -h "$host" -p "$port" -c "DROP USER $user;"
+    unset PGPASSWORD
+
+    if [ $? -eq 0 ]; then
+        echo "Xóa người dùng và cơ sở dữ liệu thành công"
+    else
+        echo "Lỗi khi xóa người dùng và cơ sở dữ liệu"
     fi
 fi
 

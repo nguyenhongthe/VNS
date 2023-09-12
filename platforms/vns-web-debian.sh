@@ -25,7 +25,8 @@ adduser "$username"
 
 # Chuyển sang user vừa tạo và chạy Zsh
 echo "Chuyển sang user vừa tạo và chạy Zsh..."
-su - "$username" -c "curl -L http://install.ohmyz.sh | sh && exec zsh -c > /dev/null"
+su - "$username" -c "curl -L http://install.ohmyz.sh | sh && chsh -s /bin/zsh && exec zsh -c > /dev/null"
+# caaus
 echo
 
 # Tạo các thư mục cần thiết

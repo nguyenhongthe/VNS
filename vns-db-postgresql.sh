@@ -68,64 +68,6 @@ done
 
 # Thay đổi mật khẩu cho người dùng postgres
 if [ "$change_postgres_password" = true ]; then
-
-    # Kiểm tra xem người dùng postgres có tồn tại không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_roles WHERE rolname='postgres';" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không tồn tại"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có mật khẩu không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_shadow WHERE usename='postgres' AND passwd IS NOT NULL;" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có mật khẩu"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có đăng nhập được không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_shadow WHERE usename='postgres' AND usesuper='t' AND usecreatedb='t' AND usesuper='t' AND passwd IS NOT NULL;" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không đăng nhập được"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có quyền truy cập vào cơ sở dữ liệu không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_database WHERE datname='postgres' AND datdba=(SELECT usesysid FROM pg_shadow WHERE usename='postgres');" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có quyền truy cập vào cơ sở dữ liệu"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có quyền truy cập vào schema public không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_namespace WHERE nspname='public' AND nspowner=(SELECT usesysid FROM pg_shadow WHERE usename='postgres');" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có quyền truy cập vào schema public"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có quyền truy cập vào các bảng trong schema public không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_class WHERE relnamespace=(SELECT oid FROM pg_namespace WHERE nspname='public') AND relowner=(SELECT usesysid FROM pg_shadow WHERE usename='postgres');" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có quyền truy cập vào các bảng trong schema public"
-        exit 1
-    fi
-    
-    # Kiểm tra xem người dùng postgres có quyền truy cập vào các sequence trong schema public không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_class WHERE relnamespace=(SELECT oid FROM pg_namespace WHERE nspname='public') AND relkind='S' AND relowner=(SELECT usesysid FROM pg_shadow WHERE usename='postgres');" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có quyền truy cập vào các sequence trong schema public"
-        exit 1
-    fi
-
-    # Kiểm tra xem người dùng postgres có quyền truy cập vào các function trong schema public không
-    sudo -u postgres psql -c "SELECT 1 FROM pg_proc WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname='public') AND proowner=(SELECT usesysid FROM pg_shadow WHERE usename='postgres');" | grep -q 1
-    if [ $? -ne 0 ]; then
-        echo "Người dùng postgres không có quyền truy cập vào các function trong schema public"
-        exit 1
-    fi
-
-    # Đổi mật khẩu cho người dùng postgres
     read -p "Nhập mật khẩu mới cho người dùng postgres: " postgres_new_password
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$postgres_new_password';"
     if [ $? -eq 0 ]; then

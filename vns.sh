@@ -258,11 +258,11 @@ function vns_db_postgresql {
             chmod +x "$update_script_dir/vns-db-postgresql.sh"
             bash "$update_script_dir/vns-db-postgresql.sh"
             echo
-            echo "Cài đặt cơ sở dữ liệu PostgreSQL hoàn tất."
+            echo "Cài đặt script quản lý cơ sở dữ liệu PostgreSQL hoàn tất."
             echo
             exit
         else
-            echo "Lỗi trong quá trình tải về và cài đặt cơ sở dữ liệu PostgreSQL."
+            echo "Lỗi trong quá trình tải về và cài đặt script quản lý cơ sở dữ liệu PostgreSQL."
             echo
             exit 1
         fi
@@ -270,11 +270,12 @@ function vns_db_postgresql {
     else
         bash "$update_script_dir/vns-db-postgresql.sh"
         echo
-        echo "Cài đặt cơ sở dữ liệu PostgreSQL hoàn tất."
+        echo "Cài đặt script quản lý cơ sở dữ liệu PostgreSQL hoàn tất."
         echo
         exit
     fi
 }
+
 # Lấy phiên bản Python nếu có hoặc thông báo nếu chưa cài đặt.
 python_version=$(python3 -V 2>&1)
 if [ $? -eq 0 ]; then
@@ -354,6 +355,11 @@ $0
     - $nginx_version
     - $supervisor_version
 =====================================================================================================
+=====================================================================================================
+    Mẹo: Nếu bạn muốn thêm VNS Script vào biến môi trường PATH thì có thể chạy lệnh sau:
+    "ln -s $update_script_dir/vns.sh /usr/local/bin/vns"
+    Sau đó bạn có thể chạy VNS Script bằng cách gõ lệnh 'vns' ở bất kỳ thư mục nào.
+=====================================================================================================
 
 EOF
     exit 0
@@ -365,8 +371,8 @@ if [ "$1" == "web" ]; then
     exit
 fi
 
-# Kiểm tra nếu tham số là 'db-postgresql' thì chỉ chạy hàm quản lý cơ sở dữ liệu postgresql.
-if [ "$1" == "db-postgresql" ]; then
+# Kiểm tra nếu tham số là 'postgresql' thì chỉ chạy hàm quản lý cơ sở dữ liệu postgresql.
+if [ "$1" == "postgresql" ]; then
     vns_db_postgresql
     exit
 fi
@@ -412,7 +418,7 @@ Tùy chọn:
     check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
     changelog       In ra changelog của phiên bản mới nhất.
     web             Tạo cấu hình mặc định cho user để chạy web.
-    db-postgresql   Quản lý cơ sở dữ liệu PostgreSQL.
+    postgresql      Quản lý cơ sở dữ liệu PostgreSQL.
     reinstall       Cài đặt lại VNS Script.
 EOF
     exit 0

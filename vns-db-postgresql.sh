@@ -6,7 +6,7 @@
 # Ngày: 2023-08-25
 # Phiên bản: 1.0.3
 # Giấy phép: Giấy phép MIT
-# Sử dụng: curl -sO https://vnscdn.comvns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
+# Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
 
 # PostgreSQL Database Management Script
@@ -17,11 +17,12 @@ DEFAULT_PORT="5432"  # Giá trị mặc định cho cổng PostgreSQL
 print_usage() {
     echo "Sử dụng: $0 [Tùy chọn]"
     echo "Tùy chọn:"
-    echo "  -h, --help           Hiển thị hướng dẫn sử dụng"
-    echo "  -u, --create-user    Tạo người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
-    echo "  -e, --empty-schema   Làm rỗng và tạo lại schema"
-    echo "  -i, --import-db      Import cơ sở dữ liệu từ file"
-    echo "  -x, --export-db      Export cơ sở dữ liệu ra file"
+    echo "  -h, --help              Hiển thị hướng dẫn sử dụng"
+    echo "  -u, --create-user       Tạo người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
+    echo "  -e, --empty-schema      Làm rỗng và tạo lại schema"
+    echo "  -i, --import-db         Import cơ sở dữ liệu từ file"
+    echo "  -x, --export-db         Export cơ sở dữ liệu ra file"
+    echo "  -p, --change-password   Đổi mật khẩu cho người dùng postgres"
     exit 0
 }
 
@@ -53,6 +54,10 @@ while [[ $# -gt 0 ]]; do
             export_db=true
             shift
             ;;
+        -p|--change-password)
+            change_postgres_password
+            shift
+            ;;
         *)
             echo "Tùy chọn không hợp lệ: $1"
             print_usage
@@ -60,6 +65,17 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Hàm thay đổi mật khẩu cho người dùng postgres
+change_postgres_password() {
+    read -p "Nhập mật khẩu mới cho người dùng postgres: " postgres_new_password
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$postgres_new_password';"
+    if [ $? -eq 0 ]; then
+        echo "Đổi mật khẩu cho người dùng postgres thành công"
+    else
+        echo "Lỗi khi đổi mật khẩu cho người dùng postgres"
+    fi
+}
 
 # Nhập thông tin cấu hình của PostgreSQL
 read -p "Nhập host của PostgreSQL (mặc định: $DEFAULT_HOST): " host
@@ -70,37 +86,38 @@ port=${port:-"$DEFAULT_PORT"}
 
 # Tạo người dùng và cơ sở dữ liệu mới
 if [ "$create_user" = true ]; then
-    read -p "Nhập tên người dùng PostgreSQL (admin): " admin_user
-    admin_user=${admin_user:-"admin"}
-
-    read -s -p "Nhập mật khẩu PostgreSQL cho người dùng $admin_user: " admin_password
-    echo
-
     read -p "Nhập tên người dùng mới: " new_user
+    echo
     read -s -p "Nhập mật khẩu cho người dùng $new_user: " new_user_password
     echo
     read -p "Nhập tên cơ sở dữ liệu mới cho người dùng $new_user: " new_database
 
     # Tạo người dùng
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -c "CREATE USER $new_user WITH ENCRYPTED PASSWORD '$new_user_password';"
+    sudo -u postgres psql -h "$host" -p "$port" -c "CREATE USER $new_user WITH ENCRYPTED PASSWORD '$new_user_password';"
 
     # Tạo cơ sở dữ liệu và gán quyền cho người dùng
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -c "CREATE DATABASE $new_database OWNER $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -c "CREATE DATABASE $new_database OWNER $new_user;"
 
     # Gán quyền truy cập vào cơ sở dữ liệu
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -d "$new_database" -c "GRANT CONNECT ON DATABASE $new_database TO $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT CONNECT ON DATABASE $new_database TO $new_user;"
 
     # Gán quyền truy cập vào schema public
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -d "$new_database" -c "GRANT USAGE ON SCHEMA public TO $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE ON SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các bảng trong schema public
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -d "$new_database" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các sequence trong schema public (nếu có)
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -d "$new_database" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $new_user;"
 
     # Gán quyền truy cập vào các function trong schema public (nếu có)
-    sudo -u postgres psql -h "$host" -p "$port" -U "$admin_user" -d "$new_database" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $new_user;"
+    sudo -u postgres psql -h "$host" -p "$port" -d "$new_database" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $new_user;"
+    
+    if [ $? -eq 0 ]; then
+        echo "Tạo người dùng và cơ sở dữ liệu thành công"
+    else
+        echo "Lỗi khi tạo người dùng và cơ sở dữ liệu"
+    fi
 fi
 
 # Làm rỗng và tạo lại schema

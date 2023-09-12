@@ -3,8 +3,8 @@
 # Tên tập lệnh: vns-db-postgreslq.sh
 # Mô tả: Quản lý cơ sở dữ liệu PostgreSQL.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
-# Ngày: 2023-08-25
-# Phiên bản: 1.0.3
+# Ngày: 2023-09-12
+# Phiên bản: 1.0.4
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Thay đổi mật khẩu cho người dùng postgres
-if ["change_postgres_password" = true ]; then    
+if [ "$change_postgres_password" = true ]; then
 
     # Kiểm tra xem người dùng postgres có tồn tại không
     sudo -u postgres psql -c "SELECT 1 FROM pg_roles WHERE rolname='postgres';" | grep -q 1

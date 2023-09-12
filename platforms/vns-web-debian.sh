@@ -30,12 +30,21 @@ echo
 
 # Tạo các thư mục cần thiết
 echo "Tạo các thư mục cần thiết..."
+echo
 create_user_directory "$username" "configs"
+echo
 create_user_directory "$username" "logs"
+echo
 create_user_directory "$username" "commands"
+echo
 create_user_directory "$username" "www"
+echo
 create_user_directory "$username" "nextjs"
+echo
 create_user_directory "$username" "ssl"
+echo
 
+# Thoát khỏi user vừa tạo
+echo "Thoát khỏi user vừa tạo..."
 echo "Cấu hình cơ bản cho user $username đã hoàn tất."
 echo

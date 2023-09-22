@@ -3,8 +3,8 @@
 # Tên tập lệnh: vns-db-postgreslq.sh
 # Mô tả: Quản lý cơ sở dữ liệu PostgreSQL.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
-# Ngày: 2023-09-12
-# Phiên bản: 1.0.9
+# Ngày: 2023-09-22
+# Phiên bản: 1.0.10
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns-db-postgresql.sh && chmod +x vns-db-postgresql.sh && bash vns-db-postgresql.sh
 #==============================================================================================================
@@ -17,6 +17,7 @@ port="5432"  # Giá trị mặc định cho cổng PostgreSQL
 print_usage() {
     echo "Sử dụng: $0 [Tùy chọn]"
     echo "Tùy chọn:"
+    echo "  info, --info            Hiển thị thông tin về script"
     echo "  -h, --help              Hiển thị hướng dẫn sử dụng"
     echo "  -u, --create-user       Tạo người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
     echo "  -d, --delete-user       Xóa người dùng PostgreSQL và cơ sở dữ liệu tương ứng"
@@ -37,6 +38,10 @@ while [[ $# -gt 0 ]]; do
     case $key in
         -h|--help)
             print_usage
+            shift
+            ;;
+        info|--info)
+            info=true
             shift
             ;;
         -u|--create-user)
@@ -73,6 +78,12 @@ done
 
 # Thay đổi mật khẩu cho người dùng postgres
 if [ "$change_postgres_password" = true ]; then
+    echo
+    # Nhập tên người dùng cần đổi mật khẩu
+    read -p "Nhập tên người dùng cần đổi mật khẩu (mặc định là postgres): " postgres_user
+    if [ -z "$postgres_user" ]; then
+        postgres_user="postgres"
+    fi
     read -s -p "Nhập mật khẩu mới cho người dùng postgres: " postgres_new_password
     sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$postgres_new_password';"
     if [ $? -eq 0 ]; then
@@ -87,8 +98,11 @@ if [ "$create_user" = true ]; then
     # Nhập mật khẩu cho người dùng postgres
     echo
     read -s -p "Nhập mật khẩu cho người dùng postgres: " postgres_password
+    echo
     read -p "Nhập tên người dùng mới: " new_user
+    echo
     read -s -p "Nhập mật khẩu cho người dùng $new_user: " new_user_password
+    echo
     read -p "Nhập tên cơ sở dữ liệu mới cho người dùng $new_user: " new_database
     echo
 
@@ -101,17 +115,9 @@ if [ "$create_user" = true ]; then
     # Gán quyền truy cập vào cơ sở dữ liệu
     PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT CONNECT ON DATABASE $new_database TO $new_user;"
 
-    # Gán quyền truy cập vào schema public
-    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE ON SCHEMA public TO $new_user;"
-
-    # Gán quyền truy cập vào các bảng trong schema public
-    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $new_user;"
-
-    # Gán quyền truy cập vào các sequence trong schema public (nếu có)
-    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $new_user;"
-
-    # Gán quyền truy cập vào các function trong schema public (nếu có)
-    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $new_user;"
+    # Gán quyền sở hữu vào schema public
+    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "ALTER SCHEMA public OWNER TO $new_user;"
+    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -d "$new_database" -c "GRANT ALL ON SCHEMA public TO $new_user;"
     unset PGPASSWORD
 
     if [ $? -eq 0 ]; then
@@ -124,7 +130,7 @@ fi
 # Xóa người dùng và cơ sở dữ liệu
 if [ "$delete_user" = true ]; then
     echo
-    read -s -p "Nhập mật khẩu PostgreSQL của người dùng postgres: " postgres_password
+    read -s -p "Nhập mật khẩu PostgreSQL của người dùng quản trị postgres: " postgres_password
     echo
     echo
     echo -e "\e[1;31mBạn đang thực hiện thao tác xóa người dùng và cơ sở dữ liệu PostgreSQL\e[0m"
@@ -135,8 +141,8 @@ if [ "$delete_user" = true ]; then
     read -p "Nhập tên cơ sở dữ liệu PostgreSQL cần xóa: " database
     echo
 
-    PGPASSWORD="$postgres_password" psql -U "$user" -h "$host" -p "$port" -c "DROP DATABASE $database;"
-    PGPASSWORD="$postgres_password" psql -U "$user" -h "$host" -p "$port" -c "DROP USER $user;"
+    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -c "DROP DATABASE $database;"
+    PGPASSWORD="$postgres_password" psql -U postgres -h "$host" -p "$port" -c "DROP USER $user;"
     unset PGPASSWORD
 
     if [ $? -eq 0 ]; then
@@ -194,3 +200,17 @@ if [ "$export_db" = true ]; then
         echo "Lỗi khi export cơ sở dữ liệu"
     fi
 fi
+
+# Script Info
+if [ "$info" = true ]; then
+    echo
+    echo "================================================================"
+    echo "  -   Quản lý cơ sở dữ liệu PostgreSQL."
+    echo "  -   Phiên bản: 1.0.10"
+    echo "  -   Ngày: 22-09-2023"
+    echo "  -   Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>"
+    echo "  -   Giấy phép: MIT License"
+    echo "================================================================"
+    echo
+fi
+

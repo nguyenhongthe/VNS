@@ -45,7 +45,7 @@ bash ~/vns.sh check-update
 
 ## Đóng góp và báo lỗi
 
-Repo này được đồng bộ tự động với `repo.vnscdn.com`. Nếu bạn muốn đóng góp hoặc báo lỗi, hãy truy cập vào repo chính [nguyenhongthe/repo.vnscdn.com](https://github.com/nguyenhongthe/repo.vnscdn.com/tree/main/packages/vns) nơi mã gốc được phát triển.
+Nếu bạn gặp lỗi khi sử dụng VNS Script, vui lòng tạo một issue mới tại [đây](https://github.com/nguyenhongthe/VNS/issues) hoặc gửi pull request để đóng góp cho dự án.
 
 ## Bản quyền và giấy phép
 

@@ -3,14 +3,14 @@
 # Tên tập lệnh: VNS Script
 # Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.
 # Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>
-# Ngày: 2023-09-12
-# Phiên bản: 1.0.1
+# Ngày: 2023-09-23
+# Phiên bản: 1.0.2
 # Giấy phép: Giấy phép MIT
 # Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
 # Hoặc: wget https://vnscdn.com/vns.sh -O ~/vns.sh && chmod +x ~/vns.sh && bash ~/vns.sh
 #==============================================================================================================
 
-vns_version="1.0.1"
+vns_version="1.0.2"
 vns_debian_version="1.0.1"
 vns_ubuntu_version="1.0.0"
 vns_amazon_version="1.0.0"
@@ -45,6 +45,93 @@ if [ ! -e '/usr/bin/wget' ] && [ ! -e '/usr/bin/curl' ]; then
         dnf update -y
         dnf install -y wget curl
     fi
+fi
+
+# Hàm hiển thị hướng dẫn sử dụng.
+function display_help() {
+    cat <<EOF
+Sử dụng: $0 [tùy chọn]
+
+Tùy chọn:
+    info            Hiển thị thông tin script.
+    -h, --help      Hiển thị hướng dẫn sử dụng.
+    check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
+    changelog       In ra changelog của phiên bản mới nhất.
+    web             Tạo cấu hình mặc định cho user để chạy web.
+    postgresql      Quản lý cơ sở dữ liệu PostgreSQL.
+    reinstall       Cài đặt lại VNS Script.
+EOF
+}
+
+# Kiểm tra số lượng tham số được cung cấp
+if [ $# -eq 0 ]; then
+    # Kiểm tra xem script đã được cài đặt tại /usr/local/bin/vns hay chưa
+    if [ -e "/usr/local/bin/vns" ]; then
+        display_help
+    else
+        # In ra thông tin hệ thống, thuộc hệ điều hành nào.
+        echo "Hệ điều hành: $type"
+        echo
+        # In ra thông tin phiên bản của VNS Script.
+        echo "Phiên bản VNS Script: $vns_version"
+        echo
+        # In ra thông tin phiên bản của VNS Script cho hệ điều hành.
+        if [ "$type" == "debian" ]; then
+            echo "Phiên bản VNS Script cho Debian: $vns_debian_version"
+        elif [ "$type" == "ubuntu" ]; then
+            echo "Phiên bản VNS Script cho Ubuntu: $vns_ubuntu_version"
+        elif [ "$type" == "amazon" ]; then
+            echo "Phiên bản VNS Script cho Amazon Linux: $vns_amazon_version"
+        elif [ "$type" == "rhel" ]; then
+            echo "Phiên bản VNS Script cho RHEL: $vns_rhel_version"
+        fi
+        echo
+        # In ra thông tin phiên bản của VNS Script cho VNS Website.
+        echo "Phiên bản VNS Script cho VNS Website: $vns_website_version"
+        echo
+        # In ra thông tin phiên bản của các package cần thiết.
+        echo "Thông tin phiên bản các package cần thiết:"
+        echo
+        echo "Python: $python_version"
+        echo "Node.js: $node_version"
+        echo "Yarn: $yarn_version"
+        echo "PostgreSQL: $postgresql_version"
+        echo "Nginx: $nginx_version"
+        echo "Supervisor: $supervisor_version"
+        echo
+        # In ra thông tin changelog của phiên bản mới nhất.
+        print_changelog
+        echo
+        # In ra thông tin changelog của phiên bản mới nhất cho hệ điều hành.
+        print_platform_changelog
+        echo
+        # Hỏi người dùng có muốn tải về và cài đặt script cài đặt cho hệ điều hành không?
+        read -p "Bạn có muốn tải về và cài đặt script cài đặt cho hệ điều hành $type không? (y/n): " choice
+        echo
+        # Nếu có thì tải về và cài đặt.
+        if [ "$choice" == "y" ]; then
+            # Tải về và cài đặt script cài đặt cho hệ điều hành.
+            wget "https://vnscdn.com/platforms/vns-$type.sh" -O "$update_script_dir/vns-$type.sh"
+            if [ "$?" -eq '0' ]; then
+                chmod +x "$update_script_dir/vns-$type.sh"
+                bash "$update_script_dir/vns-$type.sh"
+                add_update_check_cron
+                exit
+            else
+                echo "Lỗi trong quá trình tải về và cài đặt."
+                echo
+                exit 1
+            fi
+        # Nếu không thì bỏ qua.
+        else
+            echo "Bỏ qua cài đặt script cài đặt cho hệ điều hành $type."
+            echo
+        fi
+    fi
+    exit 0
+elif [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    display_help
+    exit 0
 fi
 
 # Hàm in ra changelog của phiên bản mới của VNS Script (nếu có)
@@ -332,7 +419,7 @@ $0
     Tên tập lệnh: VNS Script                                                                               
     Mô tả: Xây dựng máy chủ chạy web tương thích với Python và Next.js cho Linux.                                                                       
     Tác giả: Nguyễn Hồng Thế <nguyenhongthe.net>                                                        
-    Ngày: 2023-09-12                                                                                    
+    Ngày: 2023-09-23                                                                                   
     Phiên bản: $vns_version                                                                                    
     Giấy phép: Giấy phép MIT                                                                            
     Sử dụng: curl -sO https://vnscdn.com/vns.sh && chmod +x vns.sh && bash vns.sh
@@ -405,23 +492,6 @@ fi
 if [ "$1" == "check-update" ]; then
     check_update
     exit
-fi
-
-# Kiểm tra số lượng tham số được cung cấp
-if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    cat <<EOF
-Sử dụng: $0 [tùy chọn]
-
-Tùy chọn:
-    info            Hiển thị thông tin script.
-    -h, --help      Hiển thị hướng dẫn sử dụng.
-    check-update    Kiểm tra và cập nhật VNS Script và script cài đặt.
-    changelog       In ra changelog của phiên bản mới nhất.
-    web             Tạo cấu hình mặc định cho user để chạy web.
-    postgresql      Quản lý cơ sở dữ liệu PostgreSQL.
-    reinstall       Cài đặt lại VNS Script.
-EOF
-    exit 0
 fi
 
 exit

@@ -1,2 +1,4 @@
-+ v1.0.1 - 12/09/2023:
-    - Thêm hàm quản lý PostgreSQL.
+# CHANGELOG VNS SCRIPT - https://vnscdn.com
+
++ v1.0.2 - 23/09/2023:
+    - Sửa lỗi nhỏ.

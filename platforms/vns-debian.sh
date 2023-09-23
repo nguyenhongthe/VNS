@@ -193,13 +193,19 @@ if ! command -v pyenv &> /dev/null; then
     echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
     exec zsh
     echo "Đã cài đặt pyenv thành công với phiên bản: $(pyenv --version)"
-    # Cài đặt Python 3.11.5
-    pyenv install 3.11.5
-    pyenv global 3.11.5
-    exec zsh
-    echo "Đã cài đặt thành công với phiên bản: $(python --version)"
 else
     echo "Đã cài đặt pyenv trước đó. Bỏ qua..."
+fi
+
+# Cài đặt Python 3.11.5
+# Kiểm tra xem đã cài đặt Python 3.11.5 chưa
+if ! command -v python3.11.5 &> /dev/null; then
+    echo "Cài đặt Python 3.11.5..."
+    pyenv install 3.11.5
+    pyenv global 3.11.5
+    echo "Đã cài đặt Python 3.11.5 thành công."
+else
+    echo "Đã cài đặt Python 3.11.5 trước đó. Bỏ qua..."
 fi
 
 # certbot
